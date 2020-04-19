@@ -1,0 +1,53 @@
+{% extends "layout.html" %}             <!--Now we want this for loop content here to override the content block of that layout 
+    template so to do that we can wrap it in a content block-->
+{% block content %}    
+    {% for post in posts.items %}
+        <article class="media content-section">
+            <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + post.author.image_file) }}">
+            <div class="media-body">
+            <div class="article-metadata">
+                <a class="mr-2" href="{{ url_for('users.user_posts', username=post.author.username) }}">{{ post.author.username }}</a>
+                <small class="text-muted">{{ post.date_posted.strftime('%Y-%m-%d') }}</small>
+            </div>
+            <h2><a class="article-title" href="{{ url_for('posts.post', post_id=post.id) }}">{{ post.title }}</a></h2>
+            <p class="article-content">{{ post.content }}</p>
+            </div>
+        </article>
+        <!--
+        <h1>{{ post.title }}</h1>
+        <p>By {{ post.author }} on {{ post.date_posted }}</p>
+        <p>{{ post.content }}</p>
+        -->
+    {% endfor %}
+    {% for page_num in posts.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+        {% if page_num %}
+            {% if posts.page == page_num %}
+                <a class="btn btn-info mb-4" href="{{url_for('main.home', page=page_num)}}">{{ page_num }}</a>        <!--btn-info will give solid blue color-->
+            {% else %}
+                <a class="btn btn-outline-info mb-4" href="{{url_for('main.home', page=page_num)}}">{{ page_num }}</a>
+            {% endif %}
+        {% else %}
+            ...                          <!--ellipse-->
+        {% endif %}
+    {% endfor %}
+{% endblock content %}                  <!--Content is name of block here which is optional-->
+
+
+
+
+<!--<!DOCTYPE html>
+<html>
+    <head>
+        {% if title %}
+            <title>Flask Blog - {{ title }}</title>
+        {% else %}
+            <title>Flask Blog</title>
+        {% endif %}
+    </head>
+    <body> 
+    </body>
+</html> -->
+<!--templating engine that flask uses is called Jinja, it allows to write code withi our template.
+To write a for loop, we can open up a code block.
+code block is represented by these curly braces and two percent sign.
+To tell the engine when for loop ends write another code block.-->
